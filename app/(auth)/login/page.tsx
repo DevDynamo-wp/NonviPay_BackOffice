@@ -7,10 +7,10 @@ import { tokenStorage } from "@/services/api";
 
 export default function LoginPage() {
   const router = useRouter();
-  const [email, setEmail] = useState("");
+  const [email, setEmail]       = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError]       = useState("");
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -20,21 +20,29 @@ export default function LoginPage() {
     try {
       const res = await authService.login({ email, password });
 
-      if (res.data) {
-        // Stocker aussi dans cookie pour le proxy Next
+      if (res.data?.success && res.data?.access) {
+        // Stocker le token dans un cookie pour le proxy Next.js
         document.cookie = `nonvipay_access_token=${res.data.access}; path=/; SameSite=Strict`;
+
+        // Stocker dans localStorage pour les appels API client-side
         tokenStorage.setTokens({
-          access: res.data.access,
+          access:  res.data.access,
           refresh: res.data.refresh,
         });
+
         router.push("/dashboard");
         return;
       }
 
-      setError(res.error?.message ?? "Email ou mot de passe incorrect");
+      // Gérer les erreurs retournées par Django
+      setError(
+        res.error?.message ??
+        (res.data && !res.data.success ? "Identifiants incorrects." : "Erreur inconnue.")
+      );
+
     } catch {
       setError(
-        "Impossible de se connecter au serveur. Verifie que le backend est disponible.",
+        "Impossible de contacter le serveur. Vérifiez que le backend Django tourne sur le port 8000."
       );
     } finally {
       setIsLoading(false);
@@ -53,9 +61,7 @@ export default function LoginPage() {
         <div className="text-center mb-10">
           <div className="inline-flex items-center gap-2 mb-4">
             <div className="w-9 h-9 rounded-xl bg-[#F5A623] flex items-center justify-center">
-              <span className="text-[#0D0E12] font-bold text-sm font-display">
-                N
-              </span>
+              <span className="text-[#0D0E12] font-bold text-sm font-display">N</span>
             </div>
             <span className="text-xl font-bold font-display tracking-tight text-white">
               NonviPay
@@ -66,12 +72,8 @@ export default function LoginPage() {
 
         {/* Card */}
         <div className="bg-[#13151C] border border-white/[0.07] rounded-2xl p-8">
-          <h1 className="text-xl font-bold font-display text-white mb-1">
-            Connexion
-          </h1>
-          <p className="text-[#9A9DB8] text-sm mb-6">
-            Accès réservé aux administrateurs
-          </p>
+          <h1 className="text-xl font-bold font-display text-white mb-1">Connexion</h1>
+          <p className="text-[#9A9DB8] text-sm mb-6">Accès réservé aux administrateurs</p>
 
           {error && (
             <div className="mb-5 px-4 py-3 rounded-lg bg-red-500/10 border border-red-500/25 text-red-400 text-sm">
@@ -115,7 +117,7 @@ export default function LoginPage() {
               disabled={isLoading}
               className="w-full py-2.5 bg-[#F5A623] hover:bg-[#E8931A] disabled:opacity-50 disabled:cursor-not-allowed text-[#0D0E12] font-bold font-display text-sm rounded-lg transition-colors mt-2"
             >
-              {isLoading ? "Connexion…" : "Se connecter"}
+              {isLoading ? "Connexion en cours…" : "Se connecter"}
             </button>
           </form>
         </div>
