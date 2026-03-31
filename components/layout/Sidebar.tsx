@@ -95,48 +95,92 @@ export function Sidebar() {
   const { logout, isLoading } = useLogout();
 
   return (
-    <aside className="fixed left-0 top-0 h-full w-60 bg-[#13151C] border-r border-white/[0.07] flex flex-col z-50">
+    <aside
+      className="fixed left-0 top-0 h-full w-60 flex flex-col z-50"
+      style={{
+        backgroundColor: 'var(--bg-surface)',
+        borderRight: '1px solid var(--border-default)',
+      }}
+    >
       {/* Logo */}
-      <div className="px-5 py-5 border-b border-white/[0.07]">
+      <div
+        className="px-5 py-5"
+        style={{ borderBottom: '1px solid var(--border-default)' }}
+      >
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg bg-[#F5A623] flex items-center justify-center shrink-0">
-            <span className="text-[#0D0E12] font-bold text-xs font-display">N</span>
+          <div
+            className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
+            style={{ backgroundColor: 'var(--brand-primary)' }}
+          >
+            <span
+              className="text-xs font-bold font-display"
+              style={{ color: 'var(--text-inverted)' }}
+            >
+              N
+            </span>
           </div>
           <div>
-            <p className="text-sm font-bold font-display text-white leading-none">NonviPay</p>
-            <p className="text-[10px] text-[#5C6080] mt-0.5 uppercase tracking-wider font-display">Admin</p>
+            <p
+              className="text-sm font-bold font-display leading-none"
+              style={{ color: 'var(--text-primary)' }}
+            >
+              NonviPay
+            </p>
+            <p
+              className="text-[10px] mt-0.5 uppercase tracking-wider font-display"
+              style={{ color: 'var(--text-tertiary)' }}
+            >
+              Admin
+            </p>
           </div>
         </div>
       </div>
 
       {/* Nav */}
       <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
-        <p className="text-[10px] font-display font-semibold uppercase tracking-widest text-[#5C6080] px-3 mb-2">
+        <p
+          className="text-[10px] font-display font-semibold uppercase tracking-widest px-3 mb-2"
+          style={{ color: 'var(--text-tertiary)' }}
+        >
           Navigation
         </p>
+
         {NAV_ITEMS.map((item) => {
           const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
           return (
             <Link
               key={item.href}
               href={item.href}
-              className={`
-                flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors group
-                ${isActive
-                  ? 'bg-[#F5A623]/10 text-[#F5A623] border border-[#F5A623]/20'
-                  : 'text-[#9A9DB8] hover:text-white hover:bg-white/[0.04] border border-transparent'
+              className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-all group"
+              style={{
+                backgroundColor: isActive ? 'var(--brand-glow)' : 'transparent',
+                color: isActive ? 'var(--brand-primary)' : 'var(--text-secondary)',
+                border: isActive
+                  ? '1px solid var(--border-brand)'
+                  : '1px solid transparent',
+              }}
+              onMouseEnter={(e) => {
+                if (!isActive) {
+                  (e.currentTarget as HTMLElement).style.backgroundColor = 'var(--bg-elevated)';
+                  (e.currentTarget as HTMLElement).style.color = 'var(--text-primary)';
                 }
-              `}
+              }}
+              onMouseLeave={(e) => {
+                if (!isActive) {
+                  (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent';
+                  (e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)';
+                }
+              }}
             >
-              <span className={isActive ? 'text-[#F5A623]' : 'text-[#5C6080] group-hover:text-[#9A9DB8]'}>
+              <span style={{ color: isActive ? 'var(--brand-primary)' : 'var(--text-tertiary)' }}>
                 {item.icon}
               </span>
               <span className="font-display font-medium flex-1">{item.label}</span>
               {item.badge === 'pending' && (
-                <span className="w-1.5 h-1.5 rounded-full bg-[#F59E0B]" />
+                <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: 'var(--warning)' }} />
               )}
               {item.badge === 'open' && (
-                <span className="w-1.5 h-1.5 rounded-full bg-[#EF4444]" />
+                <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: 'var(--error)' }} />
               )}
             </Link>
           );
@@ -144,15 +188,39 @@ export function Sidebar() {
       </nav>
 
       {/* Footer */}
-      <div className="px-3 py-4 border-t border-white/[0.07] space-y-2">
+      <div
+        className="px-3 py-4 space-y-2"
+        style={{ borderTop: '1px solid var(--border-default)' }}
+      >
         {/* Profil admin */}
-        <div className="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-[#1A1D27]">
-          <div className="w-7 h-7 rounded-full bg-[#F5A623]/20 flex items-center justify-center shrink-0">
-            <span className="text-[#F5A623] text-xs font-bold font-display">A</span>
+        <div
+          className="flex items-center gap-3 px-3 py-2.5 rounded-lg"
+          style={{ backgroundColor: 'var(--bg-elevated)' }}
+        >
+          <div
+            className="w-7 h-7 rounded-full flex items-center justify-center shrink-0"
+            style={{ backgroundColor: 'var(--brand-glow)' }}
+          >
+            <span
+              className="text-xs font-bold font-display"
+              style={{ color: 'var(--brand-primary)' }}
+            >
+              A
+            </span>
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-xs font-semibold font-display text-white truncate">Admin</p>
-            <p className="text-[10px] text-[#5C6080] truncate">Super Admin</p>
+            <p
+              className="text-xs font-semibold font-display truncate"
+              style={{ color: 'var(--text-primary)' }}
+            >
+              Admin
+            </p>
+            <p
+              className="text-[10px] truncate"
+              style={{ color: 'var(--text-tertiary)' }}
+            >
+              Super Admin
+            </p>
           </div>
         </div>
 
@@ -160,15 +228,29 @@ export function Sidebar() {
         <button
           onClick={logout}
           disabled={isLoading}
-          className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-[#9A9DB8] hover:text-red-400 hover:bg-red-500/[0.06] border border-transparent hover:border-red-500/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed group"
+          className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed group"
+          style={{
+            color: 'var(--text-secondary)',
+            border: '1px solid transparent',
+          }}
+          onMouseEnter={(e) => {
+            (e.currentTarget as HTMLElement).style.color = 'var(--error)';
+            (e.currentTarget as HTMLElement).style.backgroundColor = 'var(--error-bg)';
+            (e.currentTarget as HTMLElement).style.borderColor = 'var(--error-border)';
+          }}
+          onMouseLeave={(e) => {
+            (e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)';
+            (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent';
+            (e.currentTarget as HTMLElement).style.borderColor = 'transparent';
+          }}
         >
           {isLoading ? (
-            <svg className="w-4 h-4 animate-spin shrink-0 text-red-400" fill="none" viewBox="0 0 24 24">
+            <svg className="w-4 h-4 animate-spin shrink-0" fill="none" viewBox="0 0 24 24">
               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
             </svg>
           ) : (
-            <svg className="w-4 h-4 shrink-0 text-[#5C6080] group-hover:text-red-400 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+            <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
             </svg>
           )}
