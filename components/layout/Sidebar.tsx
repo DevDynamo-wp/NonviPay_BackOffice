@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useLogout } from '@/hooks/useLogout';
 
 const NAV_ITEMS = [
   {
@@ -91,6 +92,7 @@ const NAV_ITEMS = [
 
 export function Sidebar() {
   const pathname = usePathname();
+  const { logout, isLoading } = useLogout();
 
   return (
     <aside className="fixed left-0 top-0 h-full w-60 bg-[#13151C] border-r border-white/[0.07] flex flex-col z-50">
@@ -142,7 +144,8 @@ export function Sidebar() {
       </nav>
 
       {/* Footer */}
-      <div className="px-3 py-4 border-t border-white/[0.07]">
+      <div className="px-3 py-4 border-t border-white/[0.07] space-y-2">
+        {/* Profil admin */}
         <div className="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-[#1A1D27]">
           <div className="w-7 h-7 rounded-full bg-[#F5A623]/20 flex items-center justify-center shrink-0">
             <span className="text-[#F5A623] text-xs font-bold font-display">A</span>
@@ -152,6 +155,27 @@ export function Sidebar() {
             <p className="text-[10px] text-[#5C6080] truncate">Super Admin</p>
           </div>
         </div>
+
+        {/* Bouton déconnexion */}
+        <button
+          onClick={logout}
+          disabled={isLoading}
+          className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-[#9A9DB8] hover:text-red-400 hover:bg-red-500/[0.06] border border-transparent hover:border-red-500/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed group"
+        >
+          {isLoading ? (
+            <svg className="w-4 h-4 animate-spin shrink-0 text-red-400" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+            </svg>
+          ) : (
+            <svg className="w-4 h-4 shrink-0 text-[#5C6080] group-hover:text-red-400 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+          )}
+          <span className="font-display font-medium">
+            {isLoading ? 'Déconnexion…' : 'Se déconnecter'}
+          </span>
+        </button>
       </div>
     </aside>
   );
