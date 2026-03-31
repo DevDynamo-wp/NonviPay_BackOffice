@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import { Syne, Instrument_Sans } from 'next/font/google';
 import './globals.css';
+import { ThemeProvider } from '@/theme';
+import { themeScript } from '@/theme';
 
 const syne = Syne({
   subsets: ['latin'],
@@ -27,9 +29,20 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="fr" className={`${syne.variable} ${instrumentSans.variable}`}>
-      <body className="min-h-screen bg-[#0D0E12] text-[#F0F0F5] font-body antialiased">
-        {children}
+    <html
+      lang="fr"
+      className={`${syne.variable} ${instrumentSans.variable}`}
+      suppressHydrationWarning // nécessaire pour éviter les warnings de mismatch côté thème
+    >
+      <head>
+        {/* ⚡ Script anti-FOUC — doit être AVANT tout autre script */}
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+      </head>
+      <body className="min-h-screen font-body antialiased"
+            style={{ backgroundColor: 'var(--bg-base)', color: 'var(--text-primary)' }}>
+        <ThemeProvider>
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );
